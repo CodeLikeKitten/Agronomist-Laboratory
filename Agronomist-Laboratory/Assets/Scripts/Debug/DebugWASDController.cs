@@ -1,22 +1,26 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-public class DebugWASDController : MonoBehaviour
+public class DebugCameraController : MonoBehaviour
 {
     public float moveSpeed = 5f;
+    public float sprintMultiplier = 2f;
     public float mouseSensitivity = 2f;
     public float gravity = -9.81f;
 
-    float yVelocity;
-    float xRotation;
+    private float yVelocity;
+    private float xRotation;
 
-    CharacterController controller;
-    Camera cam;
+    private CharacterController controller;
+    private Camera cam;
 
     void Awake()
     {
         controller = GetComponent<CharacterController>();
         cam = GetComponentInChildren<Camera>();
+
+        if (cam == null)
+            Debug.LogError("Camera not found as child of player!");
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -30,10 +34,14 @@ public class DebugWASDController : MonoBehaviour
 
     void Move()
     {
-        float x = Input.GetAxis("Horizontal"); // A/D
-        float z = Input.GetAxis("Vertical");   // W/S
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
 
         Vector3 move = transform.right * x + transform.forward * z;
+
+        float speed = moveSpeed;
+        if (Input.GetKey(KeyCode.LeftShift))
+            speed *= sprintMultiplier;
 
         if (controller.isGrounded)
             yVelocity = -1f;
@@ -42,18 +50,20 @@ public class DebugWASDController : MonoBehaviour
 
         move.y = yVelocity;
 
-        controller.Move(move * moveSpeed * Time.deltaTime);
+        controller.Move(move * speed * Time.deltaTime);
     }
 
     void Look()
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * 100f * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * 100f * Time.deltaTime;
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
 
+        // Вертикальное вращение камеры
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-
         cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+
+        // Горизонтальное вращение всего объекта
         transform.Rotate(Vector3.up * mouseX);
     }
 }
