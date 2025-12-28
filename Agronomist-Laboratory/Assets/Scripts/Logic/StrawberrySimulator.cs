@@ -35,7 +35,7 @@ public class StrawberrySimulator : MonoBehaviour
 {
             Strawberry berry = new Strawberry();
             berry.name = bush.name;
-            berry.visual = bush.gameObject; // <-- теперь правильно
+            berry.visual = bush.gameObject;
             berry.size = 0.2f;
             berry.finalSize = (Random.value < 0.5f) ? StrawberrySize.Medium : StrawberrySize.Large;
             berry.isRipe = false;
