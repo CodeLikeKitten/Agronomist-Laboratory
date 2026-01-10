@@ -75,7 +75,8 @@ public class StrawberrySimulator : MonoBehaviour
 
         foreach (var berry in strawberries)
         {
-            if (lampIntensity > 0.5f && Mathf.Abs(pH - 6f) <= 1f)
+            if (lampIntensity > 0.5f && pH >= 5.5f && pH <= 6.5f)
+
             {
                 float targetSize = (berry.finalSize == StrawberrySize.Medium) ? 0.6f : 1f;
                 berry.size = Mathf.Min(berry.size + targetSize / totalWeeks, targetSize);

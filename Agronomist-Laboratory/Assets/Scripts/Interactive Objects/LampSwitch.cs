@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static UnityEngine.InputSystem.HID.HID;
 
 public class LampSwitch : MonoBehaviour, IClickable
 {
@@ -13,24 +14,32 @@ public class LampSwitch : MonoBehaviour, IClickable
     void Start()
     {
         // На старте ВСЕ лампы выключены
-        SetLamps(false);
+        simulator.lampIntensity = 0;
+        updateLamps();
     }
 
     public void OnClick()
     {
         isOn = !isOn;
-        SetLamps(isOn);
-
         if (simulator != null)
             simulator.lampIntensity = isOn ? 1f : 0f;
     }
 
-    void SetLamps(bool state)
+    void updateLamps()
     {
         foreach (var lamp in lamps)
         {
             if (lamp != null)
-                lamp.enabled = state;
+            {
+                lamp.enabled = isOn;
+                lamp.intensity = 100f * simulator.lampIntensity;
+            }
         }
     }
+
+    void Update()
+    {
+        isOn = simulator.lampIntensity > 0f;
+        updateLamps();
+}
 }
