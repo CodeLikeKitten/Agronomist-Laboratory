@@ -16,6 +16,11 @@ public class StrawberrySimulator : MonoBehaviour
     [Header("Scene Objects")]
     public Transform bushesParent; // родитель всех кустов на сцене
 
+    [Header("Materials")]
+    public Material unripeMaterial;   // зелёная
+    public Material ripeMaterial;     // материал клубники
+    public Material spoiledMaterial;  // чёрная
+
     private int currentWeek = 1;
 
     void Start()
@@ -36,7 +41,7 @@ public class StrawberrySimulator : MonoBehaviour
             Strawberry berry = new Strawberry();
             berry.name = bush.name;
             berry.visual = bush.gameObject;
-            berry.size = 0.2f;
+            berry.size = 0.5f;
             berry.finalSize = (Random.value < 0.5f) ? StrawberrySize.Medium : StrawberrySize.Large;
             berry.isRipe = false;
             berry.isSpoiled = false;
@@ -78,7 +83,7 @@ public class StrawberrySimulator : MonoBehaviour
             if (lampIntensity > 0.5f && pH >= 5.5f && pH <= 6.5f)
 
             {
-                float targetSize = (berry.finalSize == StrawberrySize.Medium) ? 0.6f : 1f;
+                float targetSize = (berry.finalSize == StrawberrySize.Medium) ? 1.2f : 1.6f; //здесь редактировать размер итоговый клубники
                 berry.size = Mathf.Min(berry.size + targetSize / totalWeeks, targetSize);
             }
             else
@@ -116,12 +121,18 @@ public class StrawberrySimulator : MonoBehaviour
                 var renderer = berry.visual.GetComponent<Renderer>();
                 if (renderer != null)
                 {
-                    if (berry.isSpoiled)
-                        renderer.material.color = Color.black;
-                    else if (berry.isRipe)
-                        renderer.material.color = Color.red;
-                    else
-                        renderer.material.color = Color.green;
+                    if (berry.isSpoiled && spoiledMaterial != null)
+                    {
+                        renderer.material = spoiledMaterial;
+                    }
+                    else if (berry.isRipe && ripeMaterial != null)
+                    {
+                        renderer.material = ripeMaterial;
+                    }
+                    else if (unripeMaterial != null)
+                    {
+                        renderer.material = unripeMaterial;
+                    }
                 }
             }
         }

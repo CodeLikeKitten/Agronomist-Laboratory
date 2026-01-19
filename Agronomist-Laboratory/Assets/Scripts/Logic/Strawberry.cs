@@ -10,7 +10,7 @@ public enum StrawberrySize
 public class Strawberry
 {
     public string name;
-    public float size = 0.2f; // стартовый размер (маленькая)
+    public float size = 0.5f; // стартовый размер (маленькая)
     public StrawberrySize finalSize;
     public bool isRipe = false;
     public bool isSpoiled = false;
